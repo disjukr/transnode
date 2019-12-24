@@ -1,10 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { createGlobalStyle } from 'styled-components';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const GlobalStyle = createGlobalStyle({
+  body: {
+    margin: 0,
+    fontFamily: `
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif
+    `,
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale',
+  },
+  code: {
+    fontFamily: `
+      source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace
+    `,
+  },
+});
+
+ReactDOM.render(<>
+  <GlobalStyle/>
+  <App />
+</>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
