@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { encode, decode } from '@msgpack/msgpack';
 
 export interface Vec2D {
   x: number;
@@ -54,6 +55,30 @@ export function useTransnodeDocument() {
     capsuleLibrary,
   ]);
   return document;
+}
+
+export function clearDocument(document: Document) {
+  document.setStageNodes([]);
+  document.setNodeTable({});
+  document.setCapsuleTable({});
+  document.setCapsuleLibrary([]);
+}
+
+export function toMsgpack(document: Document) {
+  const doc = { ...document };
+  for (const key in doc) {
+    const k = key as keyof Document;
+    if (typeof doc[k] === 'function') delete doc[k];
+  }
+  return encode(doc);
+}
+
+export function loadMsgpack(document: Document, msgpack: Uint8Array) {
+  const doc = decode(msgpack) as Document;
+  document.setStageNodes(doc.stageNodes);
+  document.setNodeTable(doc.nodeTable);
+  document.setCapsuleTable(doc.capsuleTable);
+  document.setCapsuleLibrary(doc.capsuleLibrary);
 }
 
 function ff() {
