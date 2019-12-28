@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { encode, decode } from '@msgpack/msgpack';
+import Providers from 'join-react-context/lib/Providers';
 
 export interface Vec2D {
   x: number;
@@ -56,6 +57,41 @@ export function useTransnodeDocument() {
   ]);
   return document;
 }
+
+const noop = () => {};
+export const transnodeDocumentContext = React.createContext<Document>(null as any);
+export const stageNodesContext = React.createContext<NodeId[]>(null as any);
+export const setStageNodesContext = React.createContext<(value: NodeId[]) => void>(noop);
+export const nodeTableContext = React.createContext<NodeTable>(null as any);
+export const setNodeTableContext = React.createContext<(value: NodeTable) => void>(noop);
+export const capsuleTableContext = React.createContext<CapsuleTable>(null as any);
+export const setCapsuleTableContext = React.createContext<(value: CapsuleTable) => void>(noop);
+export const capsuleLibraryContext = React.createContext<CapsuleLibrary>(null as any);
+export const setCapsuleLibraryContext = React.createContext<(value: CapsuleLibrary) => void>(noop);
+
+export interface DocumentProviderProps {
+  document: Document;
+  children: React.ReactNode;
+}
+export const DocumentProvider: React.FC<DocumentProviderProps> = ({ document, children }) => {
+  return React.createElement(
+    Providers,
+    {
+      providers: [
+        React.createElement(transnodeDocumentContext.Provider, { value: document }),
+        React.createElement(stageNodesContext.Provider, { value: document.stageNodes }),
+        React.createElement(setStageNodesContext.Provider, { value: document.setStageNodes }),
+        React.createElement(nodeTableContext.Provider, { value: document.nodeTable }),
+        React.createElement(setNodeTableContext.Provider, { value: document.setNodeTable }),
+        React.createElement(capsuleTableContext.Provider, { value: document.capsuleTable }),
+        React.createElement(setCapsuleTableContext.Provider, { value: document.setCapsuleTable }),
+        React.createElement(capsuleLibraryContext.Provider, { value: document.capsuleLibrary }),
+        React.createElement(setCapsuleLibraryContext.Provider, { value: document.setCapsuleLibrary }),
+      ],
+      children,
+    },
+  );
+};
 
 export function clearDocument(document: Document) {
   document.setStageNodes([]);
