@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import fuzzysearch from '../misc/fuzzysearch';
+import { builtInCapsules } from '../state/document';
+
 interface SearchBarProps {
 }
 
@@ -10,8 +13,14 @@ const SearchBar: React.FC<SearchBarProps> = ({}) => {
     <SearchInput
       type='text'
       value={searchText}
+      placeholder='search'
       onChange={e => setSearchText(e.target.value)}
     />
+    <CapsuleList>
+      {builtInCapsules.filter(({ name }) => fuzzysearch(searchText, name)).map(
+        ({ id, name }) => <CapsuleItem key={id} name={name}/>
+      )}
+    </CapsuleList>
   </Container>;
 };
 
@@ -24,6 +33,18 @@ const Container = styled('div')({
   borderRight: '1px solid black',
 });
 
-const SearchInput = styled('input')({
-  //
+const SearchInput = styled('input')({});
+
+const CapsuleList = styled('ul')({
+  flexGrow: 1,
+  overflowY: 'scroll',
 });
+
+interface CapsuleItemProps {
+  name: string;
+}
+const CapsuleItem: React.FC<CapsuleItemProps> = ({ name }) => {
+  return <li style={{ height: '2em', border: '1px solid black' }}>
+    { name }
+  </li>;
+};
