@@ -10,12 +10,34 @@ export interface Vec2D {
 export type NodeId = string;
 export interface Node {
   id: NodeId;
+  capsuleId: CapsuleId;
   name: string;
   pos: Vec2D;
 }
 
 export interface NodeTable {
   [id: string]: Node;
+}
+
+export type ValueType =
+  | 'tn:type:on-off'
+;
+
+export type SocketId = string;
+export interface Socket {
+  id: SocketId;
+  name: string;
+  types: ValueType[];
+}
+
+export interface Point {
+  nodeId: NodeId;
+  socketId: SocketId;
+}
+
+export interface Edge {
+  a: Point;
+  b: Point;
 }
 
 export type CapsuleId = string;
