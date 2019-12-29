@@ -98,7 +98,7 @@ export const setCapsuleLibraryContext = React.createContext<(value: CapsuleLibra
 
 export interface DocumentProviderProps {
   document: Document;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 export const DocumentProvider: React.FC<DocumentProviderProps> = ({ document, children }) => {
   return React.createElement(
