@@ -9,6 +9,7 @@ import {
   useTransnodeDocument,
 } from './state/document';
 import SearchBar from './components/SearchBar';
+import NodeEditor from './components/NodeEditor';
 
 const App: React.FC = () => {
   const document = useTransnodeDocument();
@@ -18,6 +19,7 @@ const App: React.FC = () => {
   </>}>
     <Container>
       <SearchBar/>
+      <NodeEditor/>
     </Container>
   </Providers>;
 }

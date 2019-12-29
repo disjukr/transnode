@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useDrag } from 'react-dnd';
 
 import fuzzysearch from '../misc/fuzzysearch';
 import { builtInCapsules } from '../state/document';
@@ -44,7 +45,12 @@ interface CapsuleItemProps {
   name: string;
 }
 const CapsuleItem: React.FC<CapsuleItemProps> = ({ name }) => {
-  return <li style={{ height: '2em', border: '1px solid black' }}>
+  const [, drag] = useDrag({
+    item: { type: 'capsule' },
+  });
+  return <li
+    ref={drag}
+    style={{ height: '2em', border: '1px solid black' }}>
     { name }
   </li>;
 };
