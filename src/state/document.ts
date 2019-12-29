@@ -47,6 +47,11 @@ export interface Capsule {
   nodes: NodeId[];
 }
 
+export interface BuiltInCapsule extends Capsule {
+  inputs: Socket[];
+  outputs: Socket[];
+}
+
 export interface CapsuleTable {
   [id: string]: Capsule;
 }
@@ -137,6 +142,45 @@ export function loadMsgpack(document: Document, msgpack: Uint8Array) {
   document.setNodeTable(doc.nodeTable);
   document.setCapsuleTable(doc.capsuleTable);
   document.setCapsuleLibrary(doc.capsuleLibrary);
+}
+
+export const builtInCapsules: BuiltInCapsule[] = [
+  {
+    id: 'tn:value:on-off',
+    name: 'on/off value',
+    nodes: [],
+    inputs: [],
+    outputs: [{
+      id: 'value',
+      name: 'value',
+      types: ['tn:type:on-off'],
+    }],
+  },
+  {
+    id: 'tn:view:on-off',
+    name: 'on/off view',
+    nodes: [],
+    inputs: [{
+      id: 'value',
+      name: 'value',
+      types: ['tn:type:on-off'],
+    }],
+    outputs: [],
+  },
+];
+
+export function isBuiltInCapsule(capsule: Capsule): capsule is BuiltInCapsule {
+  return capsule.id.startsWith('tn:');
+}
+
+export function getCapsuleInputs(capsule: Capsule): Socket[] {
+  if (isBuiltInCapsule(capsule)) return capsule.inputs;
+  return []; // TODO
+}
+
+export function getCapsuleOutputs(capsule: Capsule): Socket[] {
+  if (isBuiltInCapsule(capsule)) return capsule.outputs;
+  return []; // TODO
 }
 
 function ff() {
