@@ -130,21 +130,12 @@ export function addNode(updateDocument: UpdateDocument, node: Omit<Node, 'id'>, 
       { ...node, id, ...builtInCapsuleNodeInitTable[node.capsuleId] } :
       { ...node, id };
     document.nodeTable[id] = n;
+    if (capsuleId) {
+      document.capsuleTable[capsuleId].nodes.push(id);
+    } else {
+      document.stageNodes.push(id);
+    }
   });
-  if (capsuleId) {
-    addNodeToCapsule(updateDocument, id, capsuleId);
-  } else {
-    addNodeToStage(updateDocument, id);
-  }
-}
-
-export function addNodeToStage(updateDocument: UpdateDocument, nodeId: NodeId) {
-  updateDocument(document => void document.stageNodes.push(nodeId));
-}
-
-export function addNodeToCapsule(updateDocument: UpdateDocument, nodeId: NodeId, capsuleId: CapsuleId) {
-  if (isBuiltInCapsuleId(capsuleId!)) throw new Error;
-  updateDocument(document => void (document.capsuleTable[capsuleId].nodes.push(nodeId)));
 }
 
 export function toMsgpack(document: Document) {
