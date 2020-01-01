@@ -132,6 +132,48 @@ export function clearDocument(document: Document) {
   document.setCapsuleLibrary([]);
 }
 
+/**
+ * @param capsuleId 해당 `capsuleId`를 갖는 캡슐에 `node`를 추가합니다.
+ *                  인자를 생략할 경우 stage에 노드를 추가합니다.
+*/
+export function addNode(document: Document, node: Omit<Node, 'id'>, capsuleId?: CapsuleId) {
+  const id = (node as Node).id ?? makeRandomId();
+  const n =
+    isBuiltInCapsuleId(node.capsuleId) ?
+    { ...node, id, ...builtInCapsuleNodeInitTable[node.capsuleId] } :
+    { ...node, id }
+  ;
+  document.setNodeTable({
+    ...document.nodeTable,
+    [id]: n,
+  });
+  if (capsuleId) {
+    addNodeToCapsule(document, id, capsuleId);
+  } else {
+    addNodeToStage(document, id);
+  }
+}
+
+export function addNodeToStage(document: Document, nodeId: NodeId) {
+  document.setStageNodes([
+    ...document.stageNodes,
+    nodeId,
+  ]);
+}
+
+export function addNodeToCapsule(document: Document, nodeId: NodeId, capsuleId: CapsuleId) {
+  if (isBuiltInCapsuleId(capsuleId!)) throw new Error;
+  const capsule = document.capsuleTable[capsuleId];
+  if (!capsule) throw new Error;
+  document.setCapsuleTable({
+    ...document.capsuleTable,
+    [capsuleId]: {
+      ...capsule,
+      nodes: [...capsule.nodes, nodeId],
+    },
+  });
+}
+
 export function toMsgpack(document: Document) {
   const doc = { ...document };
   for (const key in doc) {
@@ -154,6 +196,13 @@ export type BuiltInCapsuleNode =
   | BaseNode & { capsuleId: 'tn:value:on-off', data: boolean }
   | BaseNode & { capsuleId: 'tn:view:on-off' }
 ;
+type BuiltInCapsuleNodeInitTable = {
+  [capsuleId in BuiltInCapsuleId]: Partial<Node>;
+}
+const builtInCapsuleNodeInitTable: BuiltInCapsuleNodeInitTable = {
+  'tn:value:on-off': { data: false },
+  'tn:view:on-off': {},
+};
 export const builtInCapsules: BuiltInCapsule[] = [
   {
     id: 'tn:value:on-off',
@@ -179,12 +228,16 @@ export const builtInCapsules: BuiltInCapsule[] = [
   },
 ];
 
+export function isBuiltInCapsuleId(id: string): id is BuiltInCapsuleId {
+  return id.startsWith('tn:');
+}
+
 export function isBuiltInCapsuleNode(node: Node): node is BuiltInCapsuleNode {
-  return node.id.startsWith('tn:');
+  return isBuiltInCapsuleId(node.capsuleId);
 }
 
 export function isBuiltInCapsule(capsule: Capsule): capsule is BuiltInCapsule {
-  return capsule.id.startsWith('tn:');
+  return isBuiltInCapsuleId(capsule.id);
 }
 
 export function getCapsuleInputs(capsule: Capsule): Socket[] {
