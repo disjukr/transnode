@@ -3,18 +3,18 @@ import { useDrop } from 'react-dnd';
 
 import {
   CapsuleId,
-  useTransnodeDocument,
+  useUpdateTransnodeDocument,
   addNode,
 } from '../../state/document';
 
 interface NodeEditorProps {}
 const NodeEditor: React.FC<NodeEditorProps> = ({}) => {
-  const document = useTransnodeDocument();
+  const updateDocument = useUpdateTransnodeDocument();
   const [, drop] = useDrop({
     accept: 'capsule',
     drop: (item, monitor) => {
       const { id }: { id: CapsuleId } = item as any;
-      addNode(document, {
+      addNode(updateDocument, {
         capsuleId: id,
         name: '',
         pos: monitor.getClientOffset()!,
