@@ -19,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({}) => {
     />
     <CapsuleList>
       {builtInCapsules.filter(({ name }) => fuzzysearch(searchText, name)).map(
-        ({ id, name }) => <CapsuleItem key={id} name={name}/>
+        ({ id, name }) => <CapsuleItem key={id} id={id} name={name}/>
       )}
     </CapsuleList>
   </Container>;
@@ -42,11 +42,12 @@ const CapsuleList = styled('ul')({
 });
 
 interface CapsuleItemProps {
+  id: string;
   name: string;
 }
-const CapsuleItem: React.FC<CapsuleItemProps> = ({ name }) => {
+const CapsuleItem: React.FC<CapsuleItemProps> = ({ id, name }) => {
   const [, drag] = useDrag({
-    item: { type: 'capsule' },
+    item: { type: 'capsule', id },
   });
   return <li
     ref={drag}

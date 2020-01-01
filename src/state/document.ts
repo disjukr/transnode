@@ -8,7 +8,11 @@ export interface Vec2D {
 }
 
 export type NodeId = string;
-export interface Node {
+export type Node =
+  | BaseNode
+  | BuiltInCapsuleNode
+;
+export interface BaseNode {
   id: NodeId;
   capsuleId: CapsuleId;
   name: string;
@@ -48,6 +52,7 @@ export interface Capsule {
 }
 
 export interface BuiltInCapsule extends Capsule {
+  id: BuiltInCapsuleId;
   inputs: Socket[];
   outputs: Socket[];
 }
@@ -144,6 +149,11 @@ export function loadMsgpack(document: Document, msgpack: Uint8Array) {
   document.setCapsuleLibrary(doc.capsuleLibrary);
 }
 
+export type BuiltInCapsuleId = BuiltInCapsuleNode['capsuleId'];
+export type BuiltInCapsuleNode =
+  | BaseNode & { capsuleId: 'tn:value:on-off', data: boolean }
+  | BaseNode & { capsuleId: 'tn:view:on-off' }
+;
 export const builtInCapsules: BuiltInCapsule[] = [
   {
     id: 'tn:value:on-off',
@@ -168,6 +178,10 @@ export const builtInCapsules: BuiltInCapsule[] = [
     outputs: [],
   },
 ];
+
+export function isBuiltInCapsuleNode(node: Node): node is BuiltInCapsuleNode {
+  return node.id.startsWith('tn:');
+}
 
 export function isBuiltInCapsule(capsule: Capsule): capsule is BuiltInCapsule {
   return capsule.id.startsWith('tn:');
