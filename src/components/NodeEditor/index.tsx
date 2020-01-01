@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useDrop } from 'react-dnd';
 
 import {
   CapsuleId,
+  useTransnodeDocument,
   useUpdateTransnodeDocument,
   addNode,
 } from '../../state/document';
+import { renderNode } from './node';
 
 interface NodeEditorProps {}
 const NodeEditor: React.FC<NodeEditorProps> = ({}) => {
+  const document = useTransnodeDocument();
   const updateDocument = useUpdateTransnodeDocument();
   const [, drop] = useDrop({
     accept: 'capsule',
@@ -22,9 +25,14 @@ const NodeEditor: React.FC<NodeEditorProps> = ({}) => {
     },
   });
   return <div ref={drop} style={{
+    position: 'relative',
     flexGrow: 1,
     height: '100%',
-  }}/>;
+  }}>
+    {document.stageNodes.map(
+      nodeId => renderNode(document.nodeTable[nodeId])
+    )}
+  </div>;
 };
 
-export default NodeEditor;
+export default memo(NodeEditor);
