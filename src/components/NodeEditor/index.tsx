@@ -7,24 +7,29 @@ import {
   useUpdateTransnodeDocument,
   addNode,
 } from '../../state/document';
+import useCombinedRefs from '../../misc/useCombinedRefs';
+import { useBoundingClientRectRef } from '../../misc/bounding-client-rect';
 import { renderNode } from './node';
 
 interface NodeEditorProps {}
 const NodeEditor: React.FC<NodeEditorProps> = ({}) => {
   const document = useTransnodeDocument();
   const updateDocument = useUpdateTransnodeDocument();
-  const [, drop] = useDrop({
+  const [rectRef, rect] = useBoundingClientRectRef<HTMLDivElement>();
+  const [, dropRef] = useDrop({
     accept: 'capsule',
     drop: (item, monitor) => {
       const { id }: { id: CapsuleId } = item as any;
+      const { x, y } = monitor.getClientOffset()!;
       addNode(updateDocument, {
         capsuleId: id,
         name: '',
-        pos: monitor.getClientOffset()!,
+        pos: { x: x - rect.x, y },
       });
     },
   });
-  return <div ref={drop} style={{
+  const ref = useCombinedRefs<HTMLDivElement>(dropRef, rectRef);
+  return <div ref={ref} style={{
     position: 'relative',
     flexGrow: 1,
     height: '100%',
