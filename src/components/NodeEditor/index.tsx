@@ -6,6 +6,8 @@ import {
   useTransnodeDocument,
   useUpdateTransnodeDocument,
   addNode,
+  capsuleContext,
+  getCapsule,
 } from '../../state/document';
 import useCombinedRefs from '../../misc/useCombinedRefs';
 import { useBoundingClientRectRef } from '../../misc/bounding-client-rect';
@@ -35,7 +37,13 @@ const NodeEditor: React.FC<NodeEditorProps> = ({}) => {
     height: '100%',
   }}>
     {document.stageNodes.map(
-      nodeId => renderNode(document.nodeTable[nodeId])
+      nodeId => {
+        const node = document.nodeTable[nodeId];
+        const capsule = getCapsule(document, node.capsuleId);
+        return <capsuleContext.Provider value={capsule}>
+          {renderNode(node)}
+        </capsuleContext.Provider>
+      }
     )}
   </div>;
 };

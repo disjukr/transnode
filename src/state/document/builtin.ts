@@ -47,6 +47,9 @@ export const builtInCapsules: BuiltInCapsule[] = [
     outputs: [],
   },
 ];
+export const builtInCapsulesMap: Map<BuiltInCapsuleId, BuiltInCapsule> =
+  new Map(builtInCapsules.map(builtInCapsule => [builtInCapsule.id, builtInCapsule]))
+;
 
 export function isBuiltInCapsuleId(id: string): id is BuiltInCapsuleId {
   return id.startsWith('tn:');

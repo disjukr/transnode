@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { createContext, useContext } from 'react';
 import { encode, decode } from '@msgpack/msgpack';
 import { Draft } from 'immer';
 import Providers from 'join-react-context/lib/Providers';
@@ -52,8 +52,8 @@ export const initialTransnodeDocument: Document = {
   capsuleLibrary: [],
 };
 
-export const transnodeDocumentContext = React.createContext<Document>(null as any);
-export const updateTransnodeDocumentContext = React.createContext<UpdateDocument>(noop);
+export const transnodeDocumentContext = createContext<Document>(null as any);
+export const updateTransnodeDocumentContext = createContext<UpdateDocument>(noop);
 
 export interface DocumentProviderProps {
   document: Document;
