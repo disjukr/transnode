@@ -3,71 +3,30 @@ import { encode, decode } from '@msgpack/msgpack';
 import { Draft } from 'immer';
 import Providers from 'join-react-context/lib/Providers';
 
-export interface Vec2D {
-  x: number;
-  y: number;
-}
+import {
+  builtInCapsuleNodeInitTable,
+  isBuiltInCapsuleId,
+} from './builtin';
+import {
+  CapsuleId,
+  CapsuleTable,
+  CapsuleLibrary,
+} from './capsule';
+import {
+  Node,
+  NodeId,
+  NodeTable,
+} from './node';
+import {
+  noop,
+  makeRandomId,
+} from './misc';
 
-export type NodeId = string;
-export type Node =
-  | BaseNode
-  | BuiltInCapsuleNode
-;
-export interface BaseNode {
-  id: NodeId;
-  capsuleId: CapsuleId;
-  name: string;
-  pos: Vec2D;
-}
-
-export interface NodeTable {
-  [id: string]: Node;
-}
-
-export type ValueType =
-  | 'tn:type:on-off'
-;
-
-export type SocketId = string;
-export interface Socket {
-  id: SocketId;
-  name: string;
-  types: ValueType[];
-}
-
-export interface Point {
-  nodeId: NodeId;
-  socketId: SocketId;
-}
-
-export interface Edge {
-  a: Point;
-  b: Point;
-}
-
-export type CapsuleId = string;
-export interface Capsule {
-  id: CapsuleId;
-  name: string;
-  nodes: NodeId[];
-}
-
-export interface BuiltInCapsule extends Capsule {
-  id: BuiltInCapsuleId;
-  inputs: Socket[];
-  outputs: Socket[];
-}
-
-export interface CapsuleTable {
-  [id: string]: Capsule;
-}
-
-export interface CapsuleDirectory {
-  name: string;
-  items: (CapsuleId | CapsuleDirectory)[];
-}
-
-export type CapsuleLibrary = CapsuleDirectory[];
+export * from './builtin';
+export * from './capsule';
+export * from './io';
+export * from './node';
+export * from './value';
 
 export interface Document {
   formatVersion: number;
@@ -93,7 +52,6 @@ export const initialTransnodeDocument: Document = {
   capsuleLibrary: [],
 };
 
-const noop = () => {};
 export const transnodeDocumentContext = React.createContext<Document>(null as any);
 export const updateTransnodeDocumentContext = React.createContext<UpdateDocument>(noop);
 
@@ -156,70 +114,4 @@ export function loadMsgpack(updateDocument: UpdateDocument, msgpack: Uint8Array)
     document.capsuleTable = doc.capsuleTable;
     document.capsuleLibrary = doc.capsuleLibrary;
   });
-}
-
-export type BuiltInCapsuleId = BuiltInCapsuleNode['capsuleId'];
-export type BuiltInCapsuleNode =
-  | BaseNode & { capsuleId: 'tn:value:on-off', data: boolean }
-  | BaseNode & { capsuleId: 'tn:view:on-off' }
-;
-type BuiltInCapsuleNodeInitTable = {
-  [capsuleId in BuiltInCapsuleId]: Partial<Node>;
-}
-const builtInCapsuleNodeInitTable: BuiltInCapsuleNodeInitTable = {
-  'tn:value:on-off': { data: false },
-  'tn:view:on-off': {},
-};
-export const builtInCapsules: BuiltInCapsule[] = [
-  {
-    id: 'tn:value:on-off',
-    name: 'on/off value',
-    nodes: [],
-    inputs: [],
-    outputs: [{
-      id: 'value',
-      name: 'value',
-      types: ['tn:type:on-off'],
-    }],
-  },
-  {
-    id: 'tn:view:on-off',
-    name: 'on/off view',
-    nodes: [],
-    inputs: [{
-      id: 'value',
-      name: 'value',
-      types: ['tn:type:on-off'],
-    }],
-    outputs: [],
-  },
-];
-
-export function isBuiltInCapsuleId(id: string): id is BuiltInCapsuleId {
-  return id.startsWith('tn:');
-}
-
-export function isBuiltInCapsuleNode(node: Node): node is BuiltInCapsuleNode {
-  return isBuiltInCapsuleId(node.capsuleId);
-}
-
-export function isBuiltInCapsule(capsule: Capsule): capsule is BuiltInCapsule {
-  return isBuiltInCapsuleId(capsule.id);
-}
-
-export function getCapsuleInputs(capsule: Capsule): Socket[] {
-  if (isBuiltInCapsule(capsule)) return capsule.inputs;
-  return []; // TODO
-}
-
-export function getCapsuleOutputs(capsule: Capsule): Socket[] {
-  if (isBuiltInCapsule(capsule)) return capsule.outputs;
-  return []; // TODO
-}
-
-function ff() {
-  return (Math.random() * 0x100 | 0).toString(16).padStart(2, '0');
-}
-export function makeRandomId() {
-  return [...Array(5)].map(ff).join('');
 }
