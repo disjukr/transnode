@@ -40,7 +40,7 @@ const NodeEditor: React.FC<NodeEditorProps> = ({}) => {
       nodeId => {
         const node = document.nodeTable[nodeId];
         const capsule = getCapsule(document, node.capsuleId);
-        return <capsuleContext.Provider value={capsule}>
+        return <capsuleContext.Provider key={nodeId} value={capsule}>
           {renderNode(node)}
         </capsuleContext.Provider>
       }

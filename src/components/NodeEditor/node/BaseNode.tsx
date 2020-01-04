@@ -1,5 +1,9 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
+import {
+  useDrag,
+  useDrop,
+} from 'react-dnd';
 
 import {
   Node,
@@ -7,6 +11,7 @@ import {
   getCapsuleOutputs,
   useCapsule,
   Socket,
+  isSubtypeOf,
 } from '../../../state/document';
 
 export interface BaseNodeProps {
@@ -25,7 +30,9 @@ const BaseNode: React.FC<BaseNodeProps> = ({ node, children }) => {
     left: node.pos.x + 'px',
   }}>
     {!!inputs.length && <InputContainer>
-      {inputs.map(input => <SocketComponent key={input.id} socket={input}/>)}
+      {inputs.map(
+        input => <InputSocket key={input.id} node={node} socket={input}/>
+      )}
     </InputContainer>}
     <div style={{
       minHeight: '2em',
@@ -37,7 +44,9 @@ const BaseNode: React.FC<BaseNodeProps> = ({ node, children }) => {
       {children}
     </div>
     {!!outputs.length && <OutputContainer>
-      {outputs.map(output => <SocketComponent key={output.id} socket={output}/>)}
+      {outputs.map(
+        output => <OutputSocket key={output.id} node={node} socket={output}/>
+      )}
     </OutputContainer>}
   </div>;
 };
@@ -46,13 +55,46 @@ export default memo(BaseNode);
 
 interface SocketComponentProps {
   socket: Socket;
+  divRef: React.Ref<any>;
 }
-const SocketComponent: React.FC<SocketComponentProps> = ({ socket }) => {
-  return <div style={{
+const SocketComponent: React.FC<SocketComponentProps> = ({ socket, divRef }) => {
+  return <div ref={divRef} style={{
     border: '1px solid black',
   }}>
     v
   </div>;
+};
+
+interface InputSocketProps {
+  node: Node;
+  socket: Socket;
+}
+const InputSocket: React.FC<InputSocketProps> = ({ node, socket }) => {
+  const [, dropRef] = useDrop({
+    accept: 'output',
+    canDrop: item => {
+      const { output }: { output: { node: Node, socket: Socket } } = item as any;
+      return isSubtypeOf(output.socket.types, socket.types);
+    },
+    drop: (item, monitor) => {
+      console.log(item);
+    },
+  });
+  return <SocketComponent socket={socket} divRef={dropRef}/>;
+};
+
+interface OutputSocketProps {
+  node: Node;
+  socket: Socket;
+}
+const OutputSocket: React.FC<OutputSocketProps> = ({ node, socket }) => {
+  const [, dragRef] = useDrag({
+    item: {
+      type: 'output',
+      output: { node, socket },
+    },
+  });
+  return <SocketComponent socket={socket} divRef={dragRef}/>;
 };
 
 const SocketContainer = styled('div')({

@@ -6,5 +6,5 @@ import {
 import BaseNode from './BaseNode';
 
 export function renderNode(node: Node) {
-  return <BaseNode key={node.id} node={node}/>;
+  return <BaseNode node={node}/>;
 }
