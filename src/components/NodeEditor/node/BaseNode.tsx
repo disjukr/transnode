@@ -56,10 +56,18 @@ export default memo(BaseNode);
 interface SocketComponentProps {
   socket: Socket;
   divRef: React.Ref<any>;
+  isOver?: boolean;
+  canDrop?: boolean;
 }
-const SocketComponent: React.FC<SocketComponentProps> = ({ socket, divRef }) => {
+const SocketComponent: React.FC<SocketComponentProps> = ({
+  divRef,
+  isOver,
+  canDrop,
+}) => {
   return <div ref={divRef} style={{
+    padding: '0 0.5em',
     border: '1px solid black',
+    backgroundColor: canDrop ? 'green' : isOver ? 'red' : 'white',
   }}>
     v
   </div>;
@@ -70,17 +78,27 @@ interface InputSocketProps {
   socket: Socket;
 }
 const InputSocket: React.FC<InputSocketProps> = ({ node, socket }) => {
-  const [, dropRef] = useDrop({
+  const [{ isOver, canDrop }, dropRef] = useDrop({
     accept: 'output',
     canDrop: item => {
       const { output }: { output: { node: Node, socket: Socket } } = item as any;
+      // TODO: 이미 연결된 다른 output이 있으면 false
       return isSubtypeOf(output.socket.types, socket.types);
     },
     drop: (item, monitor) => {
       console.log(item);
     },
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
+    }),
   });
-  return <SocketComponent socket={socket} divRef={dropRef}/>;
+  return <SocketComponent
+    socket={socket}
+    divRef={dropRef}
+    isOver={isOver}
+    canDrop={canDrop}
+  />;
 };
 
 interface OutputSocketProps {
