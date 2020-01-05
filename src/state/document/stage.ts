@@ -1,21 +1,13 @@
 import {
   Document,
   UpdateDocument,
-} from '.';
-import {
   builtInCapsuleNodeInitTable,
   isBuiltInCapsuleId,
-} from './builtin';
-import {
   CapsuleId,
-} from './capsule';
-import {
   SocketId,
-} from './io';
-import {
   Node,
   NodeId,
-} from './node';
+} from '.';
 import {
   makeRandomId,
 } from './misc';

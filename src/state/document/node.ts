@@ -1,9 +1,7 @@
 import {
   CapsuleId,
-} from '.';
-import {
   BuiltInCapsuleNode,
-} from './builtin';
+} from '.';
 
 export interface Vec2D {
   x: number;

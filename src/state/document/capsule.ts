@@ -3,11 +3,9 @@ import { createContext, useContext } from 'react';
 import {
   Document,
   Stage,
-} from '.';
-import {
   builtInCapsulesMap,
   isBuiltInCapsuleId,
-} from './builtin';
+} from '.';
 
 export type CapsuleId = string;
 export interface Capsule {

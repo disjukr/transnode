@@ -1,12 +1,8 @@
 import {
   isBuiltInCapsule,
-} from './builtin';
-import {
   Capsule,
-} from './capsule';
-import {
   ValueType,
-} from './value';
+} from '.';
 
 export type SocketId = string;
 export interface Socket {
