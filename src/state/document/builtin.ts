@@ -4,6 +4,9 @@ import {
   Capsule,
   Socket,
 } from '.';
+import {
+  emptyStage,
+} from './misc';
 
 export interface BuiltInCapsule extends Capsule {
   id: BuiltInCapsuleId;
@@ -27,9 +30,7 @@ export const builtInCapsules: BuiltInCapsule[] = [
   {
     id: 'tn:value:on-off',
     name: 'on/off value',
-    stage: {
-      nodes: [],
-    },
+    stage: emptyStage,
     inputs: [],
     outputs: [{
       id: 'value',
@@ -40,9 +41,7 @@ export const builtInCapsules: BuiltInCapsule[] = [
   {
     id: 'tn:view:on-off',
     name: 'on/off view',
-    stage: {
-      nodes: [],
-    },
+    stage: emptyStage,
     inputs: [{
       id: 'value',
       name: 'value',

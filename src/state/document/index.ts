@@ -13,6 +13,9 @@ import {
   CapsuleLibrary,
 } from './capsule';
 import {
+  EdgeTable,
+} from './io';
+import {
   Node,
   NodeId,
   NodeTable,
@@ -20,6 +23,7 @@ import {
 import {
   noop,
   makeRandomId,
+  emptyStage,
 } from './misc';
 
 export * from './builtin';
@@ -30,6 +34,7 @@ export * from './value';
 
 export interface Stage {
   nodes: NodeId[];
+  edgeTable: EdgeTable;
 }
 
 export interface Document {
@@ -50,9 +55,7 @@ export function useUpdateTransnodeDocument() {
 
 export const initialTransnodeDocument: Document = {
   formatVersion: 0,
-  stage: {
-    nodes: [],
-  },
+  stage: emptyStage,
   nodeTable: {},
   capsuleTable: {},
   capsuleLibrary: [],
@@ -84,8 +87,8 @@ export function clearDocument(updateDocument: UpdateDocument) {
 }
 
 /**
- * @param capsuleId 해당 `capsuleId`를 갖는 캡슐에 `node`를 추가합니다.
- *                  인자를 생략할 경우 stage에 노드를 추가합니다.
+ * @param capsuleId 해당 `capsuleId`를 갖는 캡슐의 `stage`에 `node`를 추가합니다.
+ *                  인자를 생략할 경우 최상위 `stage`에 노드를 추가합니다.
 */
 export function addNode(updateDocument: UpdateDocument, node: Omit<Node, 'id'>, capsuleId?: CapsuleId) {
   const id = (node as Node).id ?? makeRandomId();
@@ -94,11 +97,8 @@ export function addNode(updateDocument: UpdateDocument, node: Omit<Node, 'id'>, 
       { ...node, id, ...builtInCapsuleNodeInitTable[node.capsuleId] } :
       { ...node, id };
     document.nodeTable[id] = n;
-    if (capsuleId) {
-      document.capsuleTable[capsuleId].stage.nodes.push(id);
-    } else {
-      document.stage.nodes.push(id);
-    }
+    const stage = capsuleId ? document.capsuleTable[capsuleId].stage : document.stage;
+    stage.nodes.push(id);
   });
 }
 

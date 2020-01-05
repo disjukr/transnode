@@ -23,10 +23,11 @@ export interface Point {
   socketId: SocketId;
 }
 
-export interface Edge {
-  a: Point;
-  b: Point;
-}
+export type EdgeTable = {
+  [inputNodeId in NodeId]: {
+    [inputSocketId in SocketId]: Point;
+  };
+};
 
 export function getCapsuleInputs(capsule: Capsule): Socket[] {
   if (isBuiltInCapsule(capsule)) return capsule.inputs;
