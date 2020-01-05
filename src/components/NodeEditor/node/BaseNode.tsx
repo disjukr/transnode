@@ -12,6 +12,8 @@ import {
   useCapsule,
   Socket,
   isSubtypeOf,
+  addEdge,
+  useUpdateTransnodeDocument,
 } from '../../../state/document';
 
 export interface BaseNodeProps {
@@ -78,6 +80,7 @@ interface InputSocketProps {
   socket: Socket;
 }
 const InputSocket: React.FC<InputSocketProps> = ({ node, socket }) => {
+  const updateDocument = useUpdateTransnodeDocument();
   const [{ isOver, canDrop }, dropRef] = useDrop({
     accept: 'output',
     canDrop: item => {
@@ -85,8 +88,13 @@ const InputSocket: React.FC<InputSocketProps> = ({ node, socket }) => {
       // TODO: 이미 연결된 다른 output이 있으면 false
       return isSubtypeOf(output.socket.types, socket.types);
     },
-    drop: (item, monitor) => {
-      console.log(item);
+    drop: item => {
+      const { output }: { output: { node: Node, socket: Socket } } = item as any;
+      addEdge(
+        updateDocument,
+        { nodeId: output.node.id, socketId: output.socket.id },
+        { nodeId: node.id, socketId: socket.id },
+      );
     },
     collect: monitor => ({
       isOver: monitor.isOver(),

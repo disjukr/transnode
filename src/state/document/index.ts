@@ -4,25 +4,17 @@ import { Draft } from 'immer';
 import Providers from 'join-react-context/lib/Providers';
 
 import {
-  builtInCapsuleNodeInitTable,
-  isBuiltInCapsuleId,
-} from './builtin';
-import {
-  CapsuleId,
   CapsuleTable,
   CapsuleLibrary,
 } from './capsule';
 import {
-  EdgeTable,
-} from './io';
-import {
-  Node,
-  NodeId,
   NodeTable,
 } from './node';
 import {
+  Stage,
+} from './stage';
+import {
   noop,
-  makeRandomId,
   emptyStage,
 } from './misc';
 
@@ -30,12 +22,8 @@ export * from './builtin';
 export * from './capsule';
 export * from './io';
 export * from './node';
+export * from './stage';
 export * from './value';
-
-export interface Stage {
-  nodes: NodeId[];
-  edgeTable: EdgeTable;
-}
 
 export interface Document {
   formatVersion: number;
@@ -84,22 +72,6 @@ export const DocumentProvider: React.FC<DocumentProviderProps> = ({ document, up
 
 export function clearDocument(updateDocument: UpdateDocument) {
   updateDocument(() => initialTransnodeDocument);
-}
-
-/**
- * @param capsuleId 해당 `capsuleId`를 갖는 캡슐의 `stage`에 `node`를 추가합니다.
- *                  인자를 생략할 경우 최상위 `stage`에 노드를 추가합니다.
-*/
-export function addNode(updateDocument: UpdateDocument, node: Omit<Node, 'id'>, capsuleId?: CapsuleId) {
-  const id = (node as Node).id ?? makeRandomId();
-  updateDocument(document => {
-    const n = isBuiltInCapsuleId(node.capsuleId) ?
-      { ...node, id, ...builtInCapsuleNodeInitTable[node.capsuleId] } :
-      { ...node, id };
-    document.nodeTable[id] = n;
-    const stage = capsuleId ? document.capsuleTable[capsuleId].stage : document.stage;
-    stage.nodes.push(id);
-  });
 }
 
 export function toMsgpack(document: Document) {
