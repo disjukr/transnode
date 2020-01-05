@@ -10,7 +10,7 @@ import {
   getCapsule,
 } from '../../state/document';
 import useCombinedRefs from '../../misc/useCombinedRefs';
-import { useBoundingClientRectRef } from '../../misc/bounding-client-rect';
+import useBoundingClientRectRef from '../../misc/useBoundingClientRectRef';
 import { renderNode } from './node';
 
 interface NodeEditorProps {}
