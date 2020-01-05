@@ -2,6 +2,7 @@ import {
   Stage,
 } from '.';
 
+export const emptyObject = {};
 export const noop = () => {};
 
 export const emptyStage: Stage = {

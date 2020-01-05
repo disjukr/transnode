@@ -9,6 +9,7 @@ import {
   NodeId,
 } from '.';
 import {
+  emptyObject,
   makeRandomId,
 } from './misc';
 
@@ -20,6 +21,11 @@ export interface Stage {
 export interface Point {
   nodeId: NodeId;
   socketId: SocketId;
+}
+
+export interface Edge {
+  input: Point;
+  output: Point;
 }
 
 export type EdgeTable = {
@@ -50,8 +56,22 @@ export function addNode(updateDocument: UpdateDocument, node: Omit<Node, 'id'>, 
 export function addEdge(updateDocument: UpdateDocument, output: Point, input: Point, capsuleId?: CapsuleId) {
   updateDocument(document => {
     const edgeTable = getStage(document, capsuleId).edgeTable;
-    const sockets = edgeTable[input.nodeId] ?? {};
+    const sockets = edgeTable[input.nodeId] ?? emptyObject;
     sockets[input.socketId] = output;
     edgeTable[input.nodeId] = sockets;
   });
+}
+
+export function* getEdges(document: Document, capsuleId?: CapsuleId) {
+  const edgeTable = getStage(document, capsuleId).edgeTable;
+  for (const nodeId in edgeTable) {
+    const sockets = edgeTable[nodeId] ?? emptyObject;
+    for (const socketId in sockets) {
+      const edge: Edge = {
+        output: sockets[socketId],
+        input: { nodeId, socketId },
+      };
+      yield edge;
+    }
+  }
 }
