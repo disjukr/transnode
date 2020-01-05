@@ -56,21 +56,28 @@ const BaseNode: React.FC<BaseNodeProps> = ({ node, children }) => {
 export default memo(BaseNode);
 
 interface SocketComponentProps {
+  node: Node;
   socket: Socket;
   divRef: React.Ref<any>;
   isOver?: boolean;
   canDrop?: boolean;
 }
 const SocketComponent: React.FC<SocketComponentProps> = ({
+  node,
+  socket,
   divRef,
   isOver,
   canDrop,
 }) => {
-  return <div ref={divRef} style={{
-    padding: '0 0.5em',
-    border: '1px solid black',
-    backgroundColor: canDrop ? 'green' : isOver ? 'red' : 'white',
-  }}>
+  return <div
+    ref={divRef}
+    data-tn-node-id={node.id}
+    data-tn-socket-id={socket.id}
+    style={{
+      padding: '0 0.5em',
+      border: '1px solid black',
+      backgroundColor: canDrop ? 'green' : isOver ? 'red' : 'white',
+    }}>
     v
   </div>;
 };
@@ -102,6 +109,7 @@ const InputSocket: React.FC<InputSocketProps> = ({ node, socket }) => {
     }),
   });
   return <SocketComponent
+    node={node}
     socket={socket}
     divRef={dropRef}
     isOver={isOver}
@@ -120,7 +128,11 @@ const OutputSocket: React.FC<OutputSocketProps> = ({ node, socket }) => {
       output: { node, socket },
     },
   });
-  return <SocketComponent socket={socket} divRef={dragRef}/>;
+  return <SocketComponent
+    node={node}
+    socket={socket}
+    divRef={dragRef}
+  />;
 };
 
 const SocketContainer = styled('div')({
