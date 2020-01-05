@@ -1,17 +1,19 @@
 import { createContext, useContext } from 'react';
 
-import { Document } from '.';
+import {
+  Document,
+  Stage,
+} from '.';
 import {
   builtInCapsulesMap,
   isBuiltInCapsuleId,
 } from './builtin';
-import { NodeId } from './node';
 
 export type CapsuleId = string;
 export interface Capsule {
   id: CapsuleId;
   name: string;
-  nodes: NodeId[];
+  stage: Stage;
 }
 
 export interface CapsuleTable {

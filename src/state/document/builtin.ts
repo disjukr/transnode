@@ -27,7 +27,9 @@ export const builtInCapsules: BuiltInCapsule[] = [
   {
     id: 'tn:value:on-off',
     name: 'on/off value',
-    nodes: [],
+    stage: {
+      nodes: [],
+    },
     inputs: [],
     outputs: [{
       id: 'value',
@@ -38,7 +40,9 @@ export const builtInCapsules: BuiltInCapsule[] = [
   {
     id: 'tn:view:on-off',
     name: 'on/off view',
-    nodes: [],
+    stage: {
+      nodes: [],
+    },
     inputs: [{
       id: 'value',
       name: 'value',

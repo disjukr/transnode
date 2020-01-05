@@ -28,9 +28,13 @@ export * from './io';
 export * from './node';
 export * from './value';
 
+export interface Stage {
+  nodes: NodeId[];
+}
+
 export interface Document {
   formatVersion: number;
-  stageNodes: NodeId[];
+  stage: Stage;
   nodeTable: NodeTable;
   capsuleTable: CapsuleTable;
   capsuleLibrary: CapsuleLibrary;
@@ -46,7 +50,9 @@ export function useUpdateTransnodeDocument() {
 
 export const initialTransnodeDocument: Document = {
   formatVersion: 0,
-  stageNodes: [],
+  stage: {
+    nodes: [],
+  },
   nodeTable: {},
   capsuleTable: {},
   capsuleLibrary: [],
@@ -89,9 +95,9 @@ export function addNode(updateDocument: UpdateDocument, node: Omit<Node, 'id'>, 
       { ...node, id };
     document.nodeTable[id] = n;
     if (capsuleId) {
-      document.capsuleTable[capsuleId].nodes.push(id);
+      document.capsuleTable[capsuleId].stage.nodes.push(id);
     } else {
-      document.stageNodes.push(id);
+      document.stage.nodes.push(id);
     }
   });
 }
@@ -109,7 +115,7 @@ export function loadMsgpack(updateDocument: UpdateDocument, msgpack: Uint8Array)
   const doc = decode(msgpack) as Document;
   clearDocument(updateDocument);
   updateDocument(document => {
-    document.stageNodes = doc.stageNodes;
+    document.stage = doc.stage;
     document.nodeTable = doc.nodeTable;
     document.capsuleTable = doc.capsuleTable;
     document.capsuleLibrary = doc.capsuleLibrary;

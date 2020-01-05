@@ -36,7 +36,7 @@ const NodeEditor: React.FC<NodeEditorProps> = ({}) => {
     flexGrow: 1,
     height: '100%',
   }}>
-    {document.stageNodes.map(
+    {document.stage.nodes.map(
       nodeId => {
         const node = document.nodeTable[nodeId];
         const capsule = getCapsule(document, node.capsuleId);
