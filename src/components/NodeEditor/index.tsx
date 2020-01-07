@@ -60,10 +60,14 @@ const Edges: React.FC<EdgesProps> = ({ socketRects }) => {
   return <Layer>
     <svg style={{ overflow: 'visible' }}>
       {Array.from(edges).map(
-        ({ input, output }) => {
+        ({ input, output }, index) => {
           const { x: sx, y: sy } = getTop(getSocketRect(socketRects, input));
           const { x: ex, y: ey } = getBottom(getSocketRect(socketRects, output));
-          return <Edge d={`M${sx},${sy}L${ex},${ey}`}/>;
+          const cy = (sy + ey) * 0.5;
+          return <Edge
+            key={index}
+            d={`M${sx},${sy}C${sx},${cy} ${ex},${cy} ${ex},${ey}`}
+          />;
         }
       )}
     </svg>
@@ -100,5 +104,6 @@ const Layer = styled('div')({
 
 const Edge = styled('path')({
   stroke: 'black',
+  fill: 'none',
   strokeWidth: 2,
 });
