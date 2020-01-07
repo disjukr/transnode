@@ -1,18 +1,15 @@
-export interface Offset {
-  top: number;
-  left: number;
-}
+import { Point } from './geom';
+
 export default function getRelativeOffset(
   target: HTMLElement,
   ancestor: HTMLElement = document.documentElement,
-) {
-  let top = 0;
-  let left = 0;
+): Point {
+  let x = 0, y = 0;
   let curr = target;
   while (curr && curr !== ancestor) {
-    top += curr.offsetTop;
-    left += curr.offsetLeft;
+    x += curr.offsetLeft;
+    y += curr.offsetTop;
     curr = curr.parentElement!;
   }
-  return { top, left };
+  return { x, y };
 }

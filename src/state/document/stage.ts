@@ -56,7 +56,7 @@ export function addNode(updateDocument: UpdateDocument, node: Omit<Node, 'id'>, 
 export function addEdge(updateDocument: UpdateDocument, output: Point, input: Point, capsuleId?: CapsuleId) {
   updateDocument(document => {
     const edgeTable = getStage(document, capsuleId).edgeTable;
-    const sockets = edgeTable[input.nodeId] ?? emptyObject;
+    const sockets = edgeTable[input.nodeId] ?? {};
     sockets[input.socketId] = output;
     edgeTable[input.nodeId] = sockets;
   });
