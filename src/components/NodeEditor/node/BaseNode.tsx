@@ -43,7 +43,9 @@ const BaseNode: React.FC<BaseNodeProps> = ({ node, children }) => {
     }}>
       {node.capsuleId}
       {node.name}
-      {children}
+      <div>
+        {children}
+      </div>
     </div>
     {!!outputs.length && <OutputContainer>
       {outputs.map(
