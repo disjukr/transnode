@@ -18,6 +18,7 @@ export type BuiltInCapsuleId = BuiltInCapsuleNode['capsuleId'];
 export type BuiltInCapsuleNode =
   | BaseNode & { capsuleId: 'tn:on-off:value', data: boolean }
   | BaseNode & { capsuleId: 'tn:on-off:view' }
+  | BaseNode & { capsuleId: 'tn:on-off:not' }
 ;
 export type BuiltInCapsuleNodeInitTable = {
   [capsuleId in BuiltInCapsuleId]: Partial<Node>;
@@ -25,6 +26,7 @@ export type BuiltInCapsuleNodeInitTable = {
 export const builtInCapsuleNodeInitTable: BuiltInCapsuleNodeInitTable = {
   'tn:on-off:value': { data: false },
   'tn:on-off:view': {},
+  'tn:on-off:not': {},
 };
 export const builtInCapsules: BuiltInCapsule[] = [
   {
@@ -48,6 +50,21 @@ export const builtInCapsules: BuiltInCapsule[] = [
       types: ['tn:type:on-off'],
     }],
     outputs: [],
+  },
+  {
+    id: 'tn:on-off:not',
+    name: 'on/off not',
+    stage: emptyStage,
+    inputs: [{
+      id: 'value-input',
+      name: 'value',
+      types: ['tn:type:on-off'],
+    }],
+    outputs: [{
+      id: 'value-output',
+      name: 'value',
+      types: ['tn:type:on-off'],
+    }],
   },
 ];
 export const builtInCapsulesMap: Map<BuiltInCapsuleId, BuiltInCapsule> =
