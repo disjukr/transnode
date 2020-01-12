@@ -16,19 +16,19 @@ export interface BuiltInCapsule extends Capsule {
 
 export type BuiltInCapsuleId = BuiltInCapsuleNode['capsuleId'];
 export type BuiltInCapsuleNode =
-  | BaseNode & { capsuleId: 'tn:value:on-off', data: boolean }
-  | BaseNode & { capsuleId: 'tn:view:on-off' }
+  | BaseNode & { capsuleId: 'tn:on-off:value', data: boolean }
+  | BaseNode & { capsuleId: 'tn:on-off:view' }
 ;
 export type BuiltInCapsuleNodeInitTable = {
   [capsuleId in BuiltInCapsuleId]: Partial<Node>;
 }
 export const builtInCapsuleNodeInitTable: BuiltInCapsuleNodeInitTable = {
-  'tn:value:on-off': { data: false },
-  'tn:view:on-off': {},
+  'tn:on-off:value': { data: false },
+  'tn:on-off:view': {},
 };
 export const builtInCapsules: BuiltInCapsule[] = [
   {
-    id: 'tn:value:on-off',
+    id: 'tn:on-off:value',
     name: 'on/off value',
     stage: emptyStage,
     inputs: [],
@@ -39,7 +39,7 @@ export const builtInCapsules: BuiltInCapsule[] = [
     }],
   },
   {
-    id: 'tn:view:on-off',
+    id: 'tn:on-off:view',
     name: 'on/off view',
     stage: emptyStage,
     inputs: [{
